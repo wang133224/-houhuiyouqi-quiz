@@ -86,13 +86,6 @@
     margin-top: 8px;
   }
   .result .btn-again:hover { background: var(--accent-light); }
-  .result .btn-share {
-    width: 100%; max-width: 280px; padding: 14px; background: var(--accent); color: #fff;
-    border: none; border-radius: 14px; font-size: 15px; font-weight: 600; cursor: pointer;
-    margin-top: 10px;
-  }
-  .result .btn-share:hover { opacity: 0.9; }
-
   /* 隐藏款 */
   .h-kicker { font-size: 13px; color: var(--accent); letter-spacing: 2px; margin-bottom: 14px; }
   .h-role { font-size: 12.5px; color: var(--sub); letter-spacing: 1px; margin-bottom: 6px; }
@@ -528,7 +521,6 @@ const HIDDEN_ZHANG = {
   desc: '你习惯先把不同说法放在一起看：核对细节、区分事实和感受，再追问每个人真正想要的是什么。你不急着站队，也不把和好当成唯一答案。你的优势是清醒、敏锐和判断力；但也要记得，关系里的对话并不总需要被分析到底，有时先让对方感到被听见，比继续追问更重要。',
   warn: '此隐藏结果代表偏观察、梳理和追问的答题倾向，不是对现实人物或用户人格的专业判断。',
   traits: ['观察细致', '重视事实', '善于追问', '独立判断'],
-  share: '我测出了《后会友期》里的隐藏观察位张泉灵，你也来试试？'
 };
 const OBS_TRIGGER = 9;
 
@@ -558,7 +550,6 @@ function showResult() {
       </div>
       <p style="margin-top:14px;margin-bottom:0;font-size:12px;color:#8a8278;">人物标签只提炼节目已播内容中呈现的友情应对方式，不代表嘉宾完整的现实人格。</p>
     </div>
-    <button class="btn-share" onclick="shareIt()">复制链接，发给朋友一起测</button>
     <button class="btn-again" onclick="restart()">再测一次</button>
   `;
   resultEl.classList.add('active');
@@ -574,34 +565,6 @@ function fitOneLine(el, maxFs, minFs) {
     fs -= 0.5;
     el.style.fontSize = fs + 'px';
   }
-}
-
-function shareIt() {
-  const topKey = rankingOf()[0].k;
-  const txt = '我测出来是《后会友期》里的' + CHARACTERS[topKey].name + '，你也来测测？';
-  const content = txt + ' ' + location.href;
-  const done = () => {
-    const btn = document.querySelector('.btn-share');
-    const old = btn.textContent;
-    btn.textContent = '已复制，去粘贴给朋友吧';
-    setTimeout(() => { btn.textContent = old; }, 2000);
-  };
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(content).then(done).catch(() => fallbackCopy(content, done));
-  } else {
-    fallbackCopy(content, done);
-  }
-}
-
-function fallbackCopy(text, cb) {
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.style.position = 'fixed';
-  ta.style.opacity = '0';
-  document.body.appendChild(ta);
-  ta.select();
-  try { document.execCommand('copy'); cb(); } catch (e) {}
-  document.body.removeChild(ta);
 }
 
 function renderHiddenResult() {
@@ -621,27 +584,11 @@ function renderHiddenResult() {
         ${h.traits.map(t => `<span>${t}</span>`).join('')}
       </div>
     </div>
-    <button class="btn-share" onclick="shareHidden()">分享这个隐藏款</button>
     <button class="btn-again" onclick="restart()">再测一次</button>
   `;
   resultEl.classList.add('active');
   fitOneLine(resultEl.querySelector('.h-tagline'), 16, 10.5);
   window.scrollTo({ top: 0 });
-}
-
-function shareHidden() {
-  const content = HIDDEN_ZHANG.share + ' ' + location.href;
-  const done = () => {
-    const btn = document.querySelector('.btn-share');
-    const old = btn.textContent;
-    btn.textContent = '已复制，去粘贴给朋友吧';
-    setTimeout(() => { btn.textContent = old; }, 2000);
-  };
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(content).then(done).catch(() => fallbackCopy(content, done));
-  } else {
-    fallbackCopy(content, done);
-  }
 }
 
 function restart() {
